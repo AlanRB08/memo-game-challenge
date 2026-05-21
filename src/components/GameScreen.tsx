@@ -1,5 +1,8 @@
 import { useMemo, useState } from "react";
 
+import correctSound from "../assets/correct.mp3";
+import incorrectSound from "../assets/incorrect.mp3";
+
 import { createShuffledCards } from "../data/cards";
 import { MemoryCard } from "./MemoryCard";
 import { SoundToggle } from "./SoundToggle";
@@ -18,6 +21,9 @@ export function GameScreen() {
   const [matchResult, setMatchResult] = useState<MatchResult>(null);
 
   const isBoardDisabled = isCheckingMatch || matchResult !== null;
+
+  const [isMuted, setIsMuted] = useState(true);
+
   function handleCardClick(cardId: string) {
     const isAlreadyFlipped = flippedCardIds.includes(cardId);
     const isAlreadyMatched = matchedCardIds.includes(cardId);
@@ -43,6 +49,7 @@ export function GameScreen() {
 
         if (isMatch) {
           setMatchResult("match");
+          playSoundEffect(correctSound);
 
           setMatchedCardIds((currentMatchedCardIds) => [
             ...currentMatchedCardIds,
@@ -51,6 +58,7 @@ export function GameScreen() {
           ]);
         } else {
           setMatchResult("no-match");
+          playSoundEffect(incorrectSound);
         }
 
         setFlippedCardIds([]);
@@ -65,6 +73,17 @@ export function GameScreen() {
     }
 
     setFlippedCardIds([cardId]);
+  }
+
+  function playSoundEffect(sound: string) {
+    if (isMuted) return;
+
+    const audio = new Audio(sound);
+    audio.volume = 0.55;
+
+    audio.play().catch((error) => {
+      console.error("Sound effect playback failed:", error);
+    });
   }
 
   return (
@@ -85,7 +104,10 @@ export function GameScreen() {
               </h1>
             </div>
 
-            <SoundToggle />
+            <SoundToggle
+              isMuted={isMuted}
+              onToggle={() => setIsMuted((currentIsMuted) => !currentIsMuted)}
+            />
           </div>
         </header>
 
