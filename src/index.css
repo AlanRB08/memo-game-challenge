@@ -1,1 +1,153 @@
 @import "tailwindcss";
+
+@theme {
+  --font-sans: system-ui, Avenir, Helvetica, Arial, sans-serif;
+
+  --color-background: #0f172a;
+  --color-surface: #1e293b;
+  --color-card-back: #2563eb;
+  --color-card-mark: #facc15;
+  --color-text-primary: #f8fafc;
+  --color-text-secondary: #cbd5e1;
+  --color-success: #22c55e;
+  --color-error: #ef4444;
+}
+
+html {
+  font-family: var(--font-sans);
+}
+
+body {
+  min-width: 320px;
+  min-height: 100vh;
+  margin: 0;
+  background: var(--color-background);
+  color: var(--color-text-primary);
+}
+
+button {
+  font: inherit;
+}
+
+button:focus-visible {
+  outline: 3px solid var(--color-card-mark);
+  outline-offset: 4px;
+}
+
+.stars-bg {
+  background-image: radial-gradient(
+      circle,
+      rgba(248, 250, 252, 0.9) 1px,
+      transparent 1px
+    ),
+    radial-gradient(circle, rgba(248, 250, 252, 0.5) 1px, transparent 1px),
+    radial-gradient(circle, rgba(250, 204, 21, 0.45) 1px, transparent 1px);
+  background-size: 90px 90px, 140px 140px, 220px 220px;
+  background-position: 0 0, 48px 64px, 120px 80px;
+  opacity: 0.65;
+  animation: stars-drift 36s linear infinite;
+  will-change: transform;
+}
+
+.cosmic-glow {
+  background: radial-gradient(
+      circle at 50% 20%,
+      rgba(37, 99, 235, 0.26),
+      transparent 34%
+    ),
+    radial-gradient(circle at 50% 80%, rgba(250, 204, 21, 0.1), transparent 32%),
+    linear-gradient(180deg, rgba(15, 23, 42, 0.05), rgba(15, 23, 42, 0.9));
+  pointer-events: none;
+}
+
+.start-logo-reveal {
+  opacity: 0;
+  animation: logo-reveal 1200ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.start-button-reveal {
+  opacity: 0;
+  animation: button-reveal 1200ms cubic-bezier(0.22, 1, 0.36, 1) 350ms forwards;
+}
+
+@keyframes stars-drift {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+
+  to {
+    transform: translate3d(0, 90px, 0);
+  }
+}
+
+@keyframes logo-reveal {
+  0% {
+    opacity: 0;
+    transform: translateY(-100vh) scale(0.96);
+  }
+
+  75% {
+    opacity: 1;
+    transform: translateY(8px) scale(1);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+@keyframes button-reveal {
+  0% {
+    opacity: 0;
+    transform: translateY(100vh) scale(0.96);
+    filter: blur(8px);
+  }
+
+  75% {
+    opacity: 1;
+    transform: translateY(-8px) scale(1);
+    filter: blur(0);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+.hover\:button-pop:hover {
+  animation: button-pop 650ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+@media (prefers-reduced-motion: reduce) {
+  .stars-bg,
+  .start-logo-reveal,
+  .start-button-reveal,
+  .hover\:button-pop:hover {
+    animation: none;
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+
+@keyframes button-pop {
+  0% {
+    transform: translateY(0) scale(1);
+  }
+
+  35% {
+    transform: translateY(-6px) scale(1.04);
+  }
+
+  55% {
+    transform: translateY(2px) scale(0.99);
+  }
+
+  75% {
+    transform: translateY(-2px) scale(1.01);
+  }
+
+  100% {
+    transform: translateY(0) scale(1);
+  }
+}
