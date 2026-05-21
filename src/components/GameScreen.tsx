@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 
 import { createShuffledCards } from "../data/cards";
 import { MemoryCard } from "./MemoryCard";
@@ -6,6 +6,17 @@ import { SoundToggle } from "./SoundToggle";
 
 export function GameScreen() {
   const cards = useMemo(() => createShuffledCards(), []);
+  const [flippedCardIds, setFlippedCardIds] = useState<string[]>([]);
+
+  function handleCardClick(cardId: string) {
+    setFlippedCardIds((currentFlippedCards) => {
+      if (currentFlippedCards.includes(cardId)) {
+        return currentFlippedCards;
+      }
+
+      return [...currentFlippedCards, cardId];
+    });
+  }
 
   return (
     <main className="relative h-screen overflow-hidden bg-background px-5 py-6 text-text-primary sm:px-6 sm:py-8">
@@ -40,7 +51,8 @@ export function GameScreen() {
                 index={index}
                 icon={card.icon}
                 label={card.label}
-                isFlipped={false}
+                isFlipped={flippedCardIds.includes(card.id)}
+                onClick={() => handleCardClick(card.id)}
               />
             ))}
           </div>
