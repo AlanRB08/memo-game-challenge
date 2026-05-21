@@ -4,6 +4,10 @@ import { createShuffledCards } from "../data/cards";
 import { MemoryCard } from "./MemoryCard";
 import { SoundToggle } from "./SoundToggle";
 
+import { MatchResultModal } from "./MatchResultModal";
+
+type MatchResult = "match" | "no-match" | null;
+
 export function GameScreen() {
   const cards = useMemo(() => createShuffledCards(), []);
 
@@ -11,6 +15,9 @@ export function GameScreen() {
   const [matchedCardIds, setMatchedCardIds] = useState<string[]>([]);
   const [isCheckingMatch, setIsCheckingMatch] = useState(false);
 
+  const [matchResult, setMatchResult] = useState<MatchResult>(null);
+
+  const isBoardDisabled = isCheckingMatch || matchResult !== null;
   function handleCardClick(cardId: string) {
     const isAlreadyFlipped = flippedCardIds.includes(cardId);
     const isAlreadyMatched = matchedCardIds.includes(cardId);
@@ -35,15 +42,23 @@ export function GameScreen() {
         const isMatch = firstCard.symbol === secondCard.symbol;
 
         if (isMatch) {
+          setMatchResult("match");
+
           setMatchedCardIds((currentMatchedCardIds) => [
             ...currentMatchedCardIds,
             firstCardId,
             cardId,
           ]);
+        } else {
+          setMatchResult("no-match");
         }
 
         setFlippedCardIds([]);
-        setIsCheckingMatch(false);
+
+        window.setTimeout(() => {
+          setMatchResult(null);
+          setIsCheckingMatch(false);
+        }, 900);
       }, 900);
 
       return;
@@ -74,30 +89,34 @@ export function GameScreen() {
           </div>
         </header>
 
-        <section className="flex min-h-0 flex-1 items-center justify-center">
-          <div
-            aria-label="Memory cards board"
-            className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-5"
-          >
-            {cards.map((card, index) => {
-              const isFlipped =
-                flippedCardIds.includes(card.id) ||
-                matchedCardIds.includes(card.id);
+        <section className="flex min-h-0 flex-1 flex-col">
+          <MatchResultModal result={matchResult} />
 
-              return (
-                <MemoryCard
-                  key={card.id}
-                  index={index}
-                  icon={card.icon}
-                  label={card.label}
-                  isFlipped={isFlipped}
-                  isDisabled={
-                    isCheckingMatch || matchedCardIds.includes(card.id)
-                  }
-                  onClick={() => handleCardClick(card.id)}
-                />
-              );
-            })}
+          <div className="flex min-h-0 flex-1 items-center justify-center">
+            <div
+              aria-label="Memory cards board"
+              className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-5"
+            >
+              {cards.map((card, index) => {
+                const isFlipped =
+                  flippedCardIds.includes(card.id) ||
+                  matchedCardIds.includes(card.id);
+
+                return (
+                  <MemoryCard
+                    key={card.id}
+                    index={index}
+                    icon={card.icon}
+                    label={card.label}
+                    isFlipped={isFlipped}
+                    isDisabled={
+                      isBoardDisabled || matchedCardIds.includes(card.id)
+                    }
+                    onClick={() => handleCardClick(card.id)}
+                  />
+                );
+              })}
+            </div>
           </div>
         </section>
       </section>
