@@ -35,7 +35,13 @@ export function GameScreen() {
             className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-5"
           >
             {cards.map((card, index) => (
-              <MemoryCard key={card.id} index={index} />
+              <MemoryCard
+                key={card.id}
+                index={index}
+                icon={card.icon}
+                label={card.label}
+                isFlipped={false}
+              />
             ))}
           </div>
         </section>
