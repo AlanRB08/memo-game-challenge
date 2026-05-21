@@ -1,3 +1,4 @@
+import { MemoryCard } from "./MemoryCard";
 import { SoundToggle } from "./SoundToggle";
 
 export function GameScreen() {
@@ -29,10 +30,7 @@ export function GameScreen() {
             className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-5"
           >
             {Array.from({ length: 8 }).map((_, index) => (
-              <div
-                key={index}
-                className="aspect-square w-[clamp(4.5rem,22vw,8rem)] rounded-2xl bg-card-back shadow-xl sm:w-[clamp(6rem,14vw,10rem)]"
-              />
+              <MemoryCard key={index} index={index} />
             ))}
           </div>
         </section>
