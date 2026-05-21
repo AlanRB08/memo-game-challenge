@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 
 import correctSound from "../assets/correct.mp3";
 import incorrectSound from "../assets/incorrect.mp3";
@@ -9,6 +9,10 @@ import { SoundToggle } from "./SoundToggle";
 
 import { MatchResultModal } from "./MatchResultModal";
 
+const GAME_TIME_LIMIT = 30;
+const TOTAL_PAIRS = 4;
+
+type GameStatus = "playing" | "won" | "lost";
 type MatchResult = "match" | "no-match" | null;
 
 export function GameScreen() {
@@ -20,11 +24,42 @@ export function GameScreen() {
 
   const [matchResult, setMatchResult] = useState<MatchResult>(null);
 
-  const isBoardDisabled = isCheckingMatch || matchResult !== null;
-
   const [isMuted, setIsMuted] = useState(true);
 
+  const [timeLeft, setTimeLeft] = useState(GAME_TIME_LIMIT);
+
+  const [gameStatus, setGameStatus] = useState<GameStatus>("playing");
+  const isBoardDisabled =
+    gameStatus !== "playing" || isCheckingMatch || matchResult !== null;
+  useEffect(() => {
+    if (gameStatus !== "playing") return;
+
+    const timerId = window.setInterval(() => {
+      setTimeLeft((currentTimeLeft) => {
+        if (currentTimeLeft <= 1) {
+          setGameStatus("lost");
+          return 0;
+        }
+
+        return currentTimeLeft - 1;
+      });
+    }, 1000);
+
+    return () => {
+      window.clearInterval(timerId);
+    };
+  }, [gameStatus]);
+
+  useEffect(() => {
+    const matchedPairs = matchedCardIds.length / 2;
+
+    if (matchedPairs === TOTAL_PAIRS) {
+      setGameStatus("won");
+    }
+  }, [matchedCardIds]);
+
   function handleCardClick(cardId: string) {
+    if (gameStatus !== "playing") return;
     const isAlreadyFlipped = flippedCardIds.includes(cardId);
     const isAlreadyMatched = matchedCardIds.includes(cardId);
 
@@ -104,10 +139,23 @@ export function GameScreen() {
               </h1>
             </div>
 
-            <SoundToggle
-              isMuted={isMuted}
-              onToggle={() => setIsMuted((currentIsMuted) => !currentIsMuted)}
-            />
+            <div className="flex shrink-0 items-center gap-3">
+              <div
+                aria-label={`Time left: ${timeLeft} seconds`}
+                className={`rounded-full border px-4 py-2 text-sm font-black tabular-nums shadow-lg backdrop-blur-md sm:text-base ${
+                  timeLeft <= 10
+                    ? "border-red-300/50 bg-red-500/20 text-red-100"
+                    : "border-white/15 bg-white/10 text-white"
+                }`}
+              >
+                {timeLeft}s
+              </div>
+
+              <SoundToggle
+                isMuted={isMuted}
+                onToggle={() => setIsMuted((currentIsMuted) => !currentIsMuted)}
+              />
+            </div>
           </div>
         </header>
 
