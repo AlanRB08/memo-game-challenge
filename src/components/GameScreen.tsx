@@ -1,7 +1,12 @@
+import { useMemo } from "react";
+
+import { createShuffledCards } from "../data/cards";
 import { MemoryCard } from "./MemoryCard";
 import { SoundToggle } from "./SoundToggle";
 
 export function GameScreen() {
+  const cards = useMemo(() => createShuffledCards(), []);
+
   return (
     <main className="relative h-screen overflow-hidden bg-background px-5 py-6 text-text-primary sm:px-6 sm:py-8">
       <div className="stars-bg absolute inset-0" />
@@ -29,8 +34,8 @@ export function GameScreen() {
             aria-label="Memory cards board"
             className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-5"
           >
-            {Array.from({ length: 8 }).map((_, index) => (
-              <MemoryCard key={index} index={index} />
+            {cards.map((card, index) => (
+              <MemoryCard key={card.id} index={index} />
             ))}
           </div>
         </section>
