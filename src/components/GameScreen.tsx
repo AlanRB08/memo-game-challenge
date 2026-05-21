@@ -34,14 +34,6 @@ export function GameScreen() {
   const isBoardDisabled =
     gameStatus !== "playing" || isCheckingMatch || matchResult !== null;
 
-  const stopTickingSound = () => {
-    const audio = tickingAudioRef.current;
-
-    if (!audio) return;
-
-    audio.pause();
-    audio.currentTime = 0;
-  };
   useEffect(() => {
     if (gameStatus !== "playing") return;
 
@@ -89,13 +81,6 @@ export function GameScreen() {
       // Browser autoplay protection.
     });
   }, [timeLeft, gameStatus, isMuted]);
-  useEffect(() => {
-    const matchedPairs = matchedCardIds.length / 2;
-
-    if (matchedPairs === TOTAL_PAIRS) {
-      setGameStatus("won");
-    }
-  }, [matchedCardIds]);
 
   function handleCardClick(cardId: string) {
     if (gameStatus !== "playing") return;
@@ -125,11 +110,13 @@ export function GameScreen() {
           setMatchResult("match");
           playSoundEffect(correctSound);
 
-          setMatchedCardIds((currentMatchedCardIds) => [
-            ...currentMatchedCardIds,
-            firstCardId,
-            cardId,
-          ]);
+          const nextMatchedCardIds = [...matchedCardIds, firstCardId, cardId];
+
+          setMatchedCardIds(nextMatchedCardIds);
+
+          if (nextMatchedCardIds.length / 2 === TOTAL_PAIRS) {
+            setGameStatus("won");
+          }
         } else {
           setMatchResult("no-match");
           playSoundEffect(incorrectSound);
