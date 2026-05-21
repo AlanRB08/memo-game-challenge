@@ -14,8 +14,10 @@ const TOTAL_PAIRS = 4;
 
 type GameStatus = "playing" | "won" | "lost";
 type MatchResult = "match" | "no-match" | null;
-
-export function GameScreen() {
+type GameScreenProps = {
+  onGameEnd: (result: "won" | "lost") => void;
+};
+export function GameScreen({ onGameEnd }: GameScreenProps) {
   const cards = useMemo(() => createShuffledCards(), []);
 
   const [flippedCardIds, setFlippedCardIds] = useState<string[]>([]);
@@ -41,6 +43,10 @@ export function GameScreen() {
       setTimeLeft((currentTimeLeft) => {
         if (currentTimeLeft <= 1) {
           setGameStatus("lost");
+          window.setTimeout(() => {
+            onGameEnd("lost");
+          }, 900);
+
           return 0;
         }
 
@@ -51,7 +57,7 @@ export function GameScreen() {
     return () => {
       window.clearInterval(timerId);
     };
-  }, [gameStatus]);
+  }, [gameStatus, onGameEnd]);
   useEffect(() => {
     tickingAudioRef.current = new Audio("/sound/ticking.mp3");
     tickingAudioRef.current.loop = true;
@@ -116,6 +122,9 @@ export function GameScreen() {
 
           if (nextMatchedCardIds.length / 2 === TOTAL_PAIRS) {
             setGameStatus("won");
+            window.setTimeout(() => {
+              onGameEnd("won");
+            }, 900);
           }
         } else {
           setMatchResult("no-match");
