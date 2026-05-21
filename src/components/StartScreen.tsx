@@ -1,3 +1,4 @@
+import { useState } from "react";
 import logo from "../assets/logo.svg";
 
 type StartScreenProps = {
@@ -5,6 +6,18 @@ type StartScreenProps = {
 };
 
 export function StartScreen({ onStart }: StartScreenProps) {
+  const [isExiting, setIsExiting] = useState(false);
+
+  const handleStart = () => {
+    if (isExiting) return;
+
+    setIsExiting(true);
+
+    window.setTimeout(() => {
+      onStart();
+    }, 650);
+  };
+
   return (
     <main className="relative min-h-screen overflow-hidden bg-background text-text-primary">
       <div className="stars-bg absolute inset-0" />
@@ -12,7 +25,11 @@ export function StartScreen({ onStart }: StartScreenProps) {
 
       <section className="relative z-10 flex min-h-screen items-center justify-center px-6 py-12">
         <div className="w-full max-w-2xl text-center">
-          <div className="start-logo-reveal mb-8">
+          <div
+            className={
+              isExiting ? "start-logo-exit mb-8" : "start-logo-reveal mb-8"
+            }
+          >
             <img
               src={logo}
               alt="Memory Game logo"
@@ -20,24 +37,37 @@ export function StartScreen({ onStart }: StartScreenProps) {
             />
           </div>
 
-          <p className="mb-4 text-xs font-bold uppercase tracking-[0.45em] text-text-secondary sm:text-sm">
-            Cosmic Challenge
-          </p>
+          <div
+            className={
+              isExiting ? "start-content-exit" : "start-content-reveal"
+            }
+          >
+            <p className="mb-4 text-xs font-bold uppercase tracking-[0.45em] text-text-secondary sm:text-sm">
+              Cosmic Challenge
+            </p>
 
-          <h1 className="text-5xl font-black tracking-tight sm:text-7xl">
-            Memory Game
-          </h1>
+            <h1 className="text-5xl font-black tracking-tight sm:text-7xl">
+              Memory Game
+            </h1>
 
-          <p className="mx-auto mt-5 max-w-md text-base leading-7 text-text-secondary sm:text-lg">
-            Match every cosmic pair before the timer runs out.
-          </p>
+            <p className="mx-auto mt-5 max-w-md text-base leading-7 text-text-secondary sm:text-lg">
+              Match every cosmic pair before the timer runs out.
+            </p>
+          </div>
 
-          <div className="start-button-reveal mt-11">
+          <div
+            className={
+              isExiting
+                ? "start-button-exit mt-11"
+                : "start-button-reveal mt-11"
+            }
+          >
             <button
               type="button"
-              onClick={onStart}
+              onClick={handleStart}
+              disabled={isExiting}
               aria-label="Start memory game"
-              className="group relative inline-flex min-w-44 cursor-pointer items-center justify-center overflow-hidden rounded-full border border-card-mark/50 bg-card-mark px-9 py-4 text-base font-black uppercase tracking-[0.18em] text-background shadow-[0_18px_50px_rgba(250,204,21,0.22)] transition-shadow duration-300 ease-out hover:button-pop hover:shadow-[0_22px_70px_rgba(250,204,21,0.38)] active:scale-[0.98]"
+              className="group relative inline-flex min-w-44 cursor-pointer items-center justify-center overflow-hidden rounded-full border border-card-mark/50 bg-card-mark px-9 py-4 text-base font-black uppercase tracking-[0.18em] text-background shadow-[0_18px_50px_rgba(250,204,21,0.22)] transition-shadow duration-300 ease-out hover:button-pop hover:shadow-[0_22px_70px_rgba(250,204,21,0.38)] active:scale-[0.98] disabled:pointer-events-none"
             >
               <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-white/0 via-white/35 to-white/0 opacity-0 transition duration-700 group-hover:translate-x-full group-hover:opacity-100" />
 

@@ -1,0 +1,34 @@
+export function GameScreen() {
+  return (
+    <main className="relative h-screen overflow-hidden bg-background px-5 py-6 text-text-primary sm:px-6 sm:py-8">
+      <div className="stars-bg absolute inset-0" />
+      <div className="cosmic-glow absolute inset-0" />
+
+      <section className="relative z-10 mx-auto flex h-full w-full max-w-5xl flex-col">
+        <header className="mb-5 shrink-0 border-b border-white/10 pb-5 sm:mb-8 sm:pb-6">
+          <p className="text-xs font-bold uppercase tracking-[0.35em] text-text-secondary">
+            Memory Game
+          </p>
+
+          <h1 className="mt-2 text-3xl font-black tracking-tight sm:text-4xl">
+            Find the cosmic pairs
+          </h1>
+        </header>
+
+        <section className="flex min-h-0 flex-1 items-center justify-center">
+          <div
+            aria-label="Memory cards board"
+            className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-5"
+          >
+            {Array.from({ length: 8 }).map((_, index) => (
+              <div
+                key={index}
+                className="aspect-square w-[clamp(4.5rem,22vw,8rem)] rounded-2xl bg-card-back shadow-xl sm:w-[clamp(6rem,14vw,10rem)]"
+              />
+            ))}
+          </div>
+        </section>
+      </section>
+    </main>
+  );
+}

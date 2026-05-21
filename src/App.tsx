@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { StartScreen } from "./components/StartScreen";
+import { GameScreen } from "./components/GameScreen";
 
 type Screen = "start" | "game";
 
@@ -10,11 +11,7 @@ function App() {
     <>
       {screen === "start" && <StartScreen onStart={() => setScreen("game")} />}
 
-      {screen === "game" && (
-        <main className="min-h-screen bg-background text-text-primary">
-          Game screen
-        </main>
-      )}
+      {screen === "game" && <GameScreen />}
     </>
   );
 }

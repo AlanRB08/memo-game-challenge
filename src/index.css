@@ -122,6 +122,10 @@ button:focus-visible {
   .stars-bg,
   .start-logo-reveal,
   .start-button-reveal,
+  .start-content-reveal,
+  .start-logo-exit,
+  .start-content-exit,
+  .start-button-exit,
   .hover\:button-pop:hover {
     animation: none;
     opacity: 1;
@@ -149,5 +153,80 @@ button:focus-visible {
 
   100% {
     transform: translateY(0) scale(1);
+  }
+}
+.start-content-reveal {
+  opacity: 0;
+  animation: content-reveal 900ms cubic-bezier(0.22, 1, 0.36, 1) 180ms forwards;
+}
+
+.start-logo-exit {
+  opacity: 1;
+  animation: logo-exit 650ms cubic-bezier(0.64, 0, 0.78, 0) forwards;
+}
+
+.start-content-exit {
+  opacity: 1;
+  animation: content-exit 500ms cubic-bezier(0.64, 0, 0.78, 0) forwards;
+}
+
+.start-button-exit {
+  opacity: 1;
+  animation: button-exit 650ms cubic-bezier(0.64, 0, 0.78, 0) forwards;
+}
+
+@keyframes content-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.98);
+    filter: blur(6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+@keyframes logo-exit {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateY(-120vh) scale(0.96);
+    filter: blur(8px);
+  }
+}
+
+@keyframes content-exit {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateY(24px) scale(0.98);
+    filter: blur(6px);
+  }
+}
+
+@keyframes button-exit {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateY(120vh) scale(0.96);
+    filter: blur(8px);
   }
 }
