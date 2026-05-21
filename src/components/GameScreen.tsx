@@ -6,16 +6,50 @@ import { SoundToggle } from "./SoundToggle";
 
 export function GameScreen() {
   const cards = useMemo(() => createShuffledCards(), []);
+
   const [flippedCardIds, setFlippedCardIds] = useState<string[]>([]);
+  const [matchedCardIds, setMatchedCardIds] = useState<string[]>([]);
+  const [isCheckingMatch, setIsCheckingMatch] = useState(false);
 
   function handleCardClick(cardId: string) {
-    setFlippedCardIds((currentFlippedCards) => {
-      if (currentFlippedCards.includes(cardId)) {
-        return currentFlippedCards;
-      }
+    const isAlreadyFlipped = flippedCardIds.includes(cardId);
+    const isAlreadyMatched = matchedCardIds.includes(cardId);
 
-      return [...currentFlippedCards, cardId];
-    });
+    if (isAlreadyFlipped || isAlreadyMatched || isCheckingMatch) {
+      return;
+    }
+
+    if (flippedCardIds.length === 1) {
+      const firstCardId = flippedCardIds[0];
+      const firstCard = cards.find((card) => card.id === firstCardId);
+      const secondCard = cards.find((card) => card.id === cardId);
+
+      if (!firstCard || !secondCard) return;
+
+      const nextFlippedCardIds = [firstCardId, cardId];
+
+      setFlippedCardIds(nextFlippedCardIds);
+      setIsCheckingMatch(true);
+
+      window.setTimeout(() => {
+        const isMatch = firstCard.symbol === secondCard.symbol;
+
+        if (isMatch) {
+          setMatchedCardIds((currentMatchedCardIds) => [
+            ...currentMatchedCardIds,
+            firstCardId,
+            cardId,
+          ]);
+        }
+
+        setFlippedCardIds([]);
+        setIsCheckingMatch(false);
+      }, 900);
+
+      return;
+    }
+
+    setFlippedCardIds([cardId]);
   }
 
   return (
@@ -45,16 +79,25 @@ export function GameScreen() {
             aria-label="Memory cards board"
             className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-5"
           >
-            {cards.map((card, index) => (
-              <MemoryCard
-                key={card.id}
-                index={index}
-                icon={card.icon}
-                label={card.label}
-                isFlipped={flippedCardIds.includes(card.id)}
-                onClick={() => handleCardClick(card.id)}
-              />
-            ))}
+            {cards.map((card, index) => {
+              const isFlipped =
+                flippedCardIds.includes(card.id) ||
+                matchedCardIds.includes(card.id);
+
+              return (
+                <MemoryCard
+                  key={card.id}
+                  index={index}
+                  icon={card.icon}
+                  label={card.label}
+                  isFlipped={isFlipped}
+                  isDisabled={
+                    isCheckingMatch || matchedCardIds.includes(card.id)
+                  }
+                  onClick={() => handleCardClick(card.id)}
+                />
+              );
+            })}
           </div>
         </section>
       </section>
