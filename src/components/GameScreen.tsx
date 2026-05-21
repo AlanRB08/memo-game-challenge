@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState, useEffect, useRef } from "react";
 
 import correctSound from "../assets/correct.mp3";
 import incorrectSound from "../assets/incorrect.mp3";
@@ -27,10 +27,21 @@ export function GameScreen() {
   const [isMuted, setIsMuted] = useState(true);
 
   const [timeLeft, setTimeLeft] = useState(GAME_TIME_LIMIT);
+  const tickingAudioRef = useRef<HTMLAudioElement | null>(null);
 
   const [gameStatus, setGameStatus] = useState<GameStatus>("playing");
+
   const isBoardDisabled =
     gameStatus !== "playing" || isCheckingMatch || matchResult !== null;
+
+  const stopTickingSound = () => {
+    const audio = tickingAudioRef.current;
+
+    if (!audio) return;
+
+    audio.pause();
+    audio.currentTime = 0;
+  };
   useEffect(() => {
     if (gameStatus !== "playing") return;
 
@@ -49,7 +60,35 @@ export function GameScreen() {
       window.clearInterval(timerId);
     };
   }, [gameStatus]);
+  useEffect(() => {
+    tickingAudioRef.current = new Audio("/sound/ticking.mp3");
+    tickingAudioRef.current.loop = true;
+    tickingAudioRef.current.volume = 0.5;
+    tickingAudioRef.current.playbackRate = 3;
 
+    return () => {
+      tickingAudioRef.current?.pause();
+      tickingAudioRef.current = null;
+    };
+  }, []);
+  useEffect(() => {
+    const audio = tickingAudioRef.current;
+
+    if (!audio) return;
+
+    const shouldPlayTicking =
+      gameStatus === "playing" && timeLeft <= 10 && timeLeft > 0 && !isMuted;
+
+    if (!shouldPlayTicking) {
+      audio.pause();
+      audio.currentTime = 0;
+      return;
+    }
+
+    audio.play().catch(() => {
+      // Browser autoplay protection.
+    });
+  }, [timeLeft, gameStatus, isMuted]);
   useEffect(() => {
     const matchedPairs = matchedCardIds.length / 2;
 
