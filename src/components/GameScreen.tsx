@@ -1,3 +1,5 @@
+import { SoundToggle } from "./SoundToggle";
+
 export function GameScreen() {
   return (
     <main className="relative h-screen overflow-hidden bg-background px-5 py-6 text-text-primary sm:px-6 sm:py-8">
@@ -6,13 +8,19 @@ export function GameScreen() {
 
       <section className="relative z-10 mx-auto flex h-full w-full max-w-5xl flex-col">
         <header className="mb-5 shrink-0 border-b border-white/10 pb-5 sm:mb-8 sm:pb-6">
-          <p className="text-xs font-bold uppercase tracking-[0.35em] text-text-secondary">
-            Memory Game
-          </p>
+          <div className="flex items-start justify-between gap-4">
+            <div className="min-w-0 flex-1">
+              <p className="text-xs font-bold uppercase tracking-[0.28em] text-text-secondary sm:tracking-[0.35em]">
+                Memory Game
+              </p>
 
-          <h1 className="mt-2 text-3xl font-black tracking-tight sm:text-4xl">
-            Find the cosmic pairs
-          </h1>
+              <h1 className="mt-2 max-w-[13rem] text-2xl font-black leading-tight tracking-tight sm:max-w-none sm:text-4xl">
+                Find the cosmic pairs
+              </h1>
+            </div>
+
+            <SoundToggle />
+          </div>
         </header>
 
         <section className="flex min-h-0 flex-1 items-center justify-center">
