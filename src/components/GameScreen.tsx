@@ -200,7 +200,7 @@ export function GameScreen({ onGameEnd }: GameScreenProps) {
           <div className="game-board-enter flex min-h-0 flex-1 items-center justify-center">
             <div
               aria-label="Memory cards board"
-              className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-5"
+              className={`grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-5`}
             >
               {cards.map((card, index) => {
                 const isFlipped =

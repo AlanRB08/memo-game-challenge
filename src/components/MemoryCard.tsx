@@ -33,7 +33,7 @@ export function MemoryCard({
       }`}
     >
       <span
-        className={`relative block h-full w-full rounded-2xl transition-transform duration-500 ease-out [transform-style:preserve-3d] ${
+        className={`relative block h-full w-full rounded-2xl transition-transform duration-500 ease-out [transform-style:preserve-3d] [-webkit-transform-style:preserve-3d] ${
           isFlipped
             ? "[transform:rotateY(180deg)]"
             : canInteract
@@ -41,28 +41,32 @@ export function MemoryCard({
             : ""
         }`}
       >
-        <span className="absolute inset-0 flex items-center justify-center overflow-hidden rounded-2xl border border-white/15 bg-card-back shadow-[0_12px_30px_rgba(0,0,0,0.28)] [backface-visibility:hidden] group-hover:border-yellow-200/50 group-hover:shadow-[0_18px_40px_rgba(250,204,21,0.18)]">
+        <span className="absolute inset-0 flex items-center justify-center overflow-hidden rounded-2xl border border-white/15 bg-card-back shadow-[0_12px_30px_rgba(0,0,0,0.28)] [backface-visibility:hidden] [-webkit-backface-visibility:hidden] [transform:rotateY(0deg)] [translateZ:0] group-hover:border-yellow-200/50 group-hover:shadow-[0_18px_40px_rgba(250,204,21,0.18)]">
           <span className="absolute inset-0 rounded-2xl bg-gradient-to-br from-white/20 via-transparent to-black/20 opacity-80" />
           <span className="absolute inset-[6px] rounded-xl border border-white/10 bg-white/5" />
 
-          <img
-            src={questionMarkIcon}
-            alt=""
-            aria-hidden="true"
-            className="relative h-[42%] w-[42%] drop-shadow-[0_0_14px_rgba(250,204,21,0.55)] transition duration-300 ease-out group-hover:scale-110 group-hover:drop-shadow-[0_0_20px_rgba(250,204,21,0.75)]"
-          />
+          <span className="relative transform-gpu flex h-[42%] w-[42%] items-center justify-center drop-shadow-[0_0_14px_rgba(250,204,21,0.55)] transition-transform duration-300 ease-out group-hover:scale-110 group-hover:drop-shadow-[0_0_20px_rgba(250,204,21,0.75)]">
+            <img
+              src={questionMarkIcon}
+              alt=""
+              aria-hidden="true"
+              className="block h-full w-full shrink-0"
+            />
+          </span>
         </span>
 
-        <span className="absolute inset-0 flex items-center justify-center overflow-hidden rounded-2xl border border-yellow-200/30 bg-gradient-to-br from-yellow-100 via-white to-yellow-200 shadow-[0_18px_40px_rgba(250,204,21,0.2)] [backface-visibility:hidden] [transform:rotateY(180deg)]">
+        <span className="absolute inset-0 flex items-center justify-center overflow-hidden rounded-2xl border border-yellow-200/30 bg-gradient-to-br from-yellow-100 via-white to-yellow-200 shadow-[0_18px_40px_rgba(250,204,21,0.2)] [backface-visibility:hidden] [-webkit-backface-visibility:hidden] [transform:rotateY(180deg)] [translateZ:0]">
           <span className="absolute inset-0 bg-[radial-gradient(circle_at_50%_35%,rgba(255,255,255,0.95),transparent_45%)]" />
           <span className="absolute inset-[6px] rounded-xl border border-yellow-300/30" />
 
-          <img
-            src={icon}
-            alt=""
-            aria-hidden="true"
-            className="relative h-[50%] w-[50%] drop-shadow-[0_8px_16px_rgba(0,0,0,0.25)] transition duration-300 ease-out group-hover:scale-110"
-          />
+          <span className="relative transform-gpu flex h-[50%] w-[50%] items-center justify-center drop-shadow-[0_8px_16px_rgba(0,0,0,0.25)] transition-transform duration-300 ease-out group-hover:scale-110">
+            <img
+              src={icon}
+              alt=""
+              aria-hidden="true"
+              className="block h-full w-full shrink-0"
+            />
+          </span>
         </span>
       </span>
     </button>
