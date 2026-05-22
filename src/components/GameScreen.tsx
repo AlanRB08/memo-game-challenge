@@ -58,6 +58,7 @@ export function GameScreen({ onGameEnd }: GameScreenProps) {
   });
 
   const tickingAudioRef = useRef<HTMLAudioElement | null>(null);
+  const matchTimeoutsRef = useRef<number[]>([]);
   const hasGameEndedRef = useRef(false);
   const [gameStatus, setGameStatus] = useState<GameStatus>("playing");
   const isTimeRunningOut = timeLeft <= 10;
@@ -125,7 +126,12 @@ export function GameScreen({ onGameEnd }: GameScreenProps) {
       // Browser autoplay protection.
     });
   }, [timeLeft, gameStatus, isMuted]);
-
+  useEffect(() => {
+    const pendingTimeouts = matchTimeoutsRef.current;
+    return () => {
+      pendingTimeouts.forEach((id) => window.clearTimeout(id));
+    };
+  }, []);
   function handleCardClick(cardId: string) {
     if (gameStatus !== "playing") return;
     const isAlreadyFlipped = flippedCardIds.includes(cardId);
@@ -148,7 +154,7 @@ export function GameScreen({ onGameEnd }: GameScreenProps) {
       setFlippedCardIds(nextFlippedCardIds);
       setIsCheckingMatch(true);
 
-      window.setTimeout(() => {
+      const checkTimeoutId = window.setTimeout(() => {
         const isMatch = firstCard.symbol === secondCard.symbol;
 
         if (isMatch) {
@@ -185,12 +191,13 @@ export function GameScreen({ onGameEnd }: GameScreenProps) {
 
         setFlippedCardIds([]);
 
-        window.setTimeout(() => {
+        const resetTimeoutId = window.setTimeout(() => {
           setMatchResult(null);
           setIsCheckingMatch(false);
         }, 900);
+        matchTimeoutsRef.current.push(resetTimeoutId);
       }, 900);
-
+      matchTimeoutsRef.current.push(checkTimeoutId);
       return;
     }
 
