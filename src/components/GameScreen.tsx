@@ -166,12 +166,12 @@ export function GameScreen({ onGameEnd }: GameScreenProps) {
   }
 
   return (
-    <main className="relative h-screen overflow-hidden bg-background px-5 py-6 text-text-primary sm:px-6 sm:py-8">
+    <main className="relative h-screen overflow-hidden bg-background px-5 py-4 text-text-primary sm:px-6 sm:py-8">
       <div className="stars-bg absolute inset-0" />
       <div className="cosmic-glow absolute inset-0" />
 
       <section className="relative z-10 mx-auto flex h-full w-full max-w-5xl flex-col">
-        <header className="game-header-enter mb-5 shrink-0 border-b border-white/10 pb-5 sm:mb-8 sm:pb-6">
+        <header className="game-header-enter mb-3 shrink-0 border-b border-white/10 pb-3 sm:mb-8 sm:pb-6">
           <div className="flex items-start justify-between gap-4">
             <div className="min-w-0 flex-1">
               <p className="text-xs font-bold uppercase tracking-[0.28em] text-text-secondary sm:tracking-[0.35em]">
@@ -191,9 +191,9 @@ export function GameScreen({ onGameEnd }: GameScreenProps) {
             </div>
           </div>
         </header>
-        <div className="mx-auto mb-4 flex flex-col items-center sm:mb-5">
+        <div className="mx-auto mb-2 flex flex-col items-center sm:mb-5">
           <span
-            className={`mb-2 text-[0.65rem] font-semibold uppercase tracking-[0.28em] ${
+            className={`mb-1 text-[0.65rem] font-semibold uppercase tracking-[0.28em] ${
               isTimeRunningOut ? "text-red-100/80" : "text-yellow-100/70"
             }`}
           >
@@ -201,7 +201,7 @@ export function GameScreen({ onGameEnd }: GameScreenProps) {
           </span>
 
           <div
-            className={`mx-auto flex w-fit items-end justify-center gap-2 rounded-full border px-4 py-2.5 backdrop-blur-sm transition-all duration-300 sm:gap-3 sm:px-5 sm:py-3 ${
+            className={`mx-auto flex w-fit items-end justify-center gap-2 rounded-full border px-4 py-2 backdrop-blur-sm transition-all duration-300 sm:gap-3 sm:px-5 sm:py-3 ${
               isTimeRunningOut
                 ? "timer-warning border-red-300/50 bg-red-950/30 shadow-[0_0_35px_rgba(248,113,113,0.25)]"
                 : "border-yellow-200/30 bg-black/25 shadow-[0_0_30px_rgba(250,204,21,0.12)]"
@@ -225,12 +225,10 @@ export function GameScreen({ onGameEnd }: GameScreenProps) {
           </div>
         </div>
         <section className="flex min-h-0 flex-1 flex-col">
-          <MatchResultModal result={matchResult} />
-
           <div className="game-board-enter flex min-h-0 flex-1 items-center justify-center">
             <div
               aria-label="Memory cards board"
-              className={`grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-5`}
+              className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-5"
             >
               {cards.map((card, index) => {
                 const isFlipped =
@@ -255,6 +253,7 @@ export function GameScreen({ onGameEnd }: GameScreenProps) {
           </div>
         </section>
       </section>
+      <MatchResultModal result={matchResult} />
     </main>
   );
 }

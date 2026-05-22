@@ -13,25 +13,21 @@ const modalContent = {
     message: "It's a match",
     icon: checkIcon,
     styles:
-      "border-emerald-200/50 bg-emerald-50/80 text-emerald-950 shadow-[0_18px_45px_rgba(16,185,129,0.18)]",
+      "border-emerald-200/50 bg-emerald-50/90 text-emerald-950 shadow-[0_18px_45px_rgba(16,185,129,0.22)]",
     iconWrapper: "bg-emerald-100/90 ring-emerald-300/40",
   },
   "no-match": {
     title: "Sorry",
-    message: "This is not a match",
+    message: "But this is not a match",
     icon: xIcon,
     styles:
-      "border-red-200/50 bg-red-50/80 text-red-950 shadow-[0_18px_45px_rgba(239,68,68,0.18)]",
+      "border-red-200/50 bg-red-50/90 text-red-950 shadow-[0_18px_45px_rgba(239,68,68,0.22)]",
     iconWrapper: "bg-red-100/90 ring-red-300/40",
   },
 };
 
 export function MatchResultModal({ result }: MatchResultModalProps) {
-  if (!result) {
-    return (
-      <div className="flex h-[4.75rem] shrink-0 items-center justify-center px-2 sm:h-[5rem]" />
-    );
-  }
+  if (!result) return null;
 
   const content = modalContent[result];
 
@@ -39,7 +35,7 @@ export function MatchResultModal({ result }: MatchResultModalProps) {
     <div
       role="status"
       aria-live="polite"
-      className="flex h-[4.75rem] shrink-0 items-center justify-center px-2 sm:h-[5rem]"
+      className="pop-enter pointer-events-none fixed inset-x-0 bottom-5 z-50 flex justify-center px-4 sm:bottom-8"
     >
       <div
         className={`flex w-full max-w-[18rem] items-center gap-3 rounded-[1.65rem] border px-4 py-3 backdrop-blur-xl transition duration-300 sm:max-w-sm sm:gap-4 sm:rounded-[2rem] sm:px-5 ${content.styles}`}

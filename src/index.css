@@ -127,6 +127,9 @@ button:focus-visible {
   .start-content-exit,
   .start-button-exit,
   .game-header-enter,
+  .pop-enter {
+    animation: none;
+  }
   .game-board-enter {
     animation: none;
     opacity: 1;
@@ -275,6 +278,7 @@ button:focus-visible {
     filter: blur(0);
   }
 }
+
 .resolve-screen-enter {
   opacity: 0;
   animation: resolve-screen-enter 500ms ease-out forwards;
@@ -368,5 +372,20 @@ button:focus-visible {
 
   80% {
     transform: translateX(1px);
+  }
+}
+.pop-enter {
+  animation: pop-enter 260ms ease-out forwards;
+}
+
+@keyframes pop-enter {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
   }
 }
