@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect, useRef } from "react";
+import { useMemo, useState, useEffect, useRef, useCallback } from "react";
 
 import confetti from "canvas-confetti";
 
@@ -58,12 +58,24 @@ export function GameScreen({ onGameEnd }: GameScreenProps) {
   });
 
   const tickingAudioRef = useRef<HTMLAudioElement | null>(null);
-
+  const hasGameEndedRef = useRef(false);
   const [gameStatus, setGameStatus] = useState<GameStatus>("playing");
   const isTimeRunningOut = timeLeft <= 10;
   const isBoardDisabled =
     gameStatus !== "playing" || isCheckingMatch || matchResult !== null;
 
+  const endGame = useCallback(
+    (result: "won" | "lost", isNewBestTime = false) => {
+      if (hasGameEndedRef.current) return;
+      hasGameEndedRef.current = true;
+
+      setGameStatus(result);
+      window.setTimeout(() => {
+        onGameEnd(result, isNewBestTime);
+      }, 900);
+    },
+    [onGameEnd]
+  );
   useEffect(() => {
     if (gameStatus !== "playing") return;
 
@@ -71,9 +83,6 @@ export function GameScreen({ onGameEnd }: GameScreenProps) {
       setTimeLeft((currentTimeLeft) => {
         if (currentTimeLeft <= 1) {
           setGameStatus("lost");
-          window.setTimeout(() => {
-            onGameEnd("lost");
-          }, 900);
 
           return 0;
         }
@@ -85,7 +94,7 @@ export function GameScreen({ onGameEnd }: GameScreenProps) {
     return () => {
       window.clearInterval(timerId);
     };
-  }, [gameStatus, onGameEnd]);
+  }, [gameStatus, endGame]);
   useEffect(() => {
     tickingAudioRef.current = new Audio("/sound/ticking.mp3");
     tickingAudioRef.current.loop = true;
