@@ -9,14 +9,20 @@ type GameResult = "won" | "lost";
 function App() {
   const [screen, setScreen] = useState<Screen>("start");
   const [gameResult, setGameResult] = useState<GameResult | null>(null);
+  const [isNewBestTime, setIsNewBestTime] = useState(false);
 
-  const handleGameEnd = useCallback((result: GameResult) => {
-    setGameResult(result);
-    setScreen("result");
-  }, []);
+  const handleGameEnd = useCallback(
+    (result: GameResult, newBestTime = false) => {
+      setGameResult(result);
+      setIsNewBestTime(newBestTime);
+      setScreen("result");
+    },
+    []
+  );
 
   function handlePlayAgain() {
     setGameResult(null);
+    setIsNewBestTime(false);
     setScreen("game");
   }
 
@@ -27,7 +33,11 @@ function App() {
       {screen === "game" && <GameScreen onGameEnd={handleGameEnd} />}
 
       {screen === "result" && gameResult && (
-        <ResolveScreen result={gameResult} onPlayAgain={handlePlayAgain} />
+        <ResolveScreen
+          result={gameResult}
+          isNewBestTime={isNewBestTime}
+          onPlayAgain={handlePlayAgain}
+        />
       )}
     </>
   );

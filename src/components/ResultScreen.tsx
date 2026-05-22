@@ -3,17 +3,26 @@ import restartIcon from "../assets/restart.svg";
 type ResolveScreenProps = {
   result: "won" | "lost";
   onPlayAgain: () => void;
+  isNewBestTime?: boolean;
 };
 
-export function ResolveScreen({ result, onPlayAgain }: ResolveScreenProps) {
+export function ResolveScreen({
+  result,
+  onPlayAgain,
+  isNewBestTime = false,
+}: ResolveScreenProps) {
   const title =
     result === "won"
-      ? "Congratulations, you did it!"
+      ? isNewBestTime
+        ? "New best time!"
+        : "Congratulations, you did it!"
       : "Oops, you were close, good luck next time";
 
   const description =
     result === "won"
-      ? "You found all the cosmic pairs before time ran out."
+      ? isNewBestTime
+        ? "You completed the board faster than ever. That is your new record."
+        : "You found all the cosmic pairs before time ran out."
       : "Time ran out before you completed the board.";
 
   return (

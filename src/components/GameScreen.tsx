@@ -1,5 +1,7 @@
 import { useMemo, useState, useEffect, useRef } from "react";
 
+import confetti from "canvas-confetti";
+
 import correctSound from "../assets/correct.mp3";
 import incorrectSound from "../assets/incorrect.mp3";
 import flipSound from "../assets/cardFlip.mp3";
@@ -30,7 +32,7 @@ function getTickingPlaybackRate(timeLeft: number) {
 type GameStatus = "playing" | "won" | "lost";
 type MatchResult = "match" | "no-match" | null;
 type GameScreenProps = {
-  onGameEnd: (result: "won" | "lost") => void;
+  onGameEnd: (result: "won" | "lost", isNewBestTime?: boolean) => void;
 };
 export function GameScreen({ onGameEnd }: GameScreenProps) {
   const cards = useMemo(() => createShuffledCards(), []);
@@ -156,11 +158,15 @@ export function GameScreen({ onGameEnd }: GameScreenProps) {
               localStorage.setItem(BEST_TIME_STORAGE_KEY, String(elapsedTime));
               setBestTime(elapsedTime);
             }
-
+            confetti({
+              particleCount: 140,
+              spread: 80,
+              origin: { y: 0.65 },
+            });
             setGameStatus("won");
 
             window.setTimeout(() => {
-              onGameEnd("won");
+              onGameEnd("won", isNewBestTime);
             }, 900);
           }
         } else {
