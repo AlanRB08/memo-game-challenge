@@ -1,73 +1,45 @@
-# React + TypeScript + Vite
+# Memory Game Challenge
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+An accessible memory game built as a frontend technical challenge. Flip the cards, find every cosmic pair before the timer runs out.
 
-Currently, two official plugins are available:
+## Tech stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **React 19** + **TypeScript**
+- **Vite** for tooling and dev server
+- **Tailwind CSS v4** for styling
+- **Vitest** + **Testing Library** for tests
 
-## React Compiler
+## Getting started
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+The app runs at the URL Vite prints in the terminal (default `http://localhost:5173`).
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Available scripts
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+| Script             | Description                          |
+| ------------------ | ------------------------------------ |
+| `npm run dev`      | Start the dev server                 |
+| `npm run build`    | Type-check and build for production  |
+| `npm run preview`  | Preview the production build locally |
+| `npm run lint`     | Run ESLint                           |
+| `npm run test`     | Run tests in watch mode              |
+| `npm run test:run` | Run tests once (CI mode)             |
+
+## How it works
+
+The game shows 8 cards (4 pairs). Flip two cards: if they match they stay revealed, otherwise they flip back. Match all pairs before the 30-second timer reaches zero to win. The audio toggle controls background music and sound effects.
+
+## Technical decisions
+
+- **CSS-only card flip** — the 3D flip uses native CSS transforms (`transform-style: preserve-3d`) instead of an animation library, keeping the bundle smaller and the interaction smooth.
+- **Board locking during checks** — while a pair is being evaluated the board is disabled, preventing double-clicks and race conditions.
+- **Accessibility** — interactive cards are real `<button>` elements with `aria-pressed` and visible focus rings, the match feedback uses an `aria-live` region, and animations respect `prefers-reduced-motion`.
+- **Timer feedback** — the ticking sound speeds up as time runs low to build tension without relying only on the visual countdown.
+
+## Testing
+
+Tests cover the result screen and the game board rendering. Run them with `npm run test`.
