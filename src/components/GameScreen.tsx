@@ -2,6 +2,7 @@ import { useMemo, useState, useEffect, useRef } from "react";
 
 import correctSound from "../assets/correct.mp3";
 import incorrectSound from "../assets/incorrect.mp3";
+import flipSound from "../assets/cardFlip.mp3";
 
 import { createShuffledCards } from "../data/cards";
 import { MemoryCard } from "./MemoryCard";
@@ -11,6 +12,12 @@ import { MatchResultModal } from "./MatchResultModal";
 
 const GAME_TIME_LIMIT = 30;
 const TOTAL_PAIRS = 4;
+const SOUND_VOLUME = {
+  flip: 0.75,
+  correct: 0.65,
+  incorrect: 0.65,
+  ticking: 0.45,
+};
 
 function getTickingPlaybackRate(timeLeft: number) {
   if (timeLeft <= 3) return 2.4;
@@ -69,7 +76,7 @@ export function GameScreen({ onGameEnd }: GameScreenProps) {
   useEffect(() => {
     tickingAudioRef.current = new Audio("/sound/ticking.mp3");
     tickingAudioRef.current.loop = true;
-    tickingAudioRef.current.volume = 0.5;
+    tickingAudioRef.current.volume = SOUND_VOLUME.ticking;
 
     return () => {
       tickingAudioRef.current?.pause();
@@ -105,7 +112,7 @@ export function GameScreen({ onGameEnd }: GameScreenProps) {
     if (isAlreadyFlipped || isAlreadyMatched || isCheckingMatch) {
       return;
     }
-
+    playSoundEffect(flipSound, SOUND_VOLUME.flip);
     if (flippedCardIds.length === 1) {
       const firstCardId = flippedCardIds[0];
       const firstCard = cards.find((card) => card.id === firstCardId);
@@ -123,7 +130,7 @@ export function GameScreen({ onGameEnd }: GameScreenProps) {
 
         if (isMatch) {
           setMatchResult("match");
-          playSoundEffect(correctSound);
+          playSoundEffect(correctSound, SOUND_VOLUME.correct);
 
           const nextMatchedCardIds = [...matchedCardIds, firstCardId, cardId];
 
@@ -137,7 +144,7 @@ export function GameScreen({ onGameEnd }: GameScreenProps) {
           }
         } else {
           setMatchResult("no-match");
-          playSoundEffect(incorrectSound);
+          playSoundEffect(incorrectSound, SOUND_VOLUME.incorrect);
         }
 
         setFlippedCardIds([]);
@@ -154,11 +161,11 @@ export function GameScreen({ onGameEnd }: GameScreenProps) {
     setFlippedCardIds([cardId]);
   }
 
-  function playSoundEffect(sound: string) {
+  function playSoundEffect(sound: string, volume = 0.55) {
     if (isMuted) return;
 
     const audio = new Audio(sound);
-    audio.volume = 0.55;
+    audio.volume = volume;
 
     audio.play().catch((error) => {
       console.error("Sound effect playback failed:", error);

@@ -14,7 +14,7 @@ export function SoundToggle({ isMuted, onToggle }: SoundToggleProps) {
   useEffect(() => {
     audioRef.current = new Audio(backgroundMusic);
     audioRef.current.loop = true;
-    audioRef.current.volume = 0.35;
+    audioRef.current.volume = 0.22;
 
     return () => {
       audioRef.current?.pause();
