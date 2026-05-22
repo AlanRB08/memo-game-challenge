@@ -18,6 +18,7 @@ const SOUND_VOLUME = {
   incorrect: 0.65,
   ticking: 0.45,
 };
+const BEST_TIME_STORAGE_KEY = "memory-game-best-time";
 
 function getTickingPlaybackRate(timeLeft: number) {
   if (timeLeft <= 3) return 2.4;
@@ -44,6 +45,15 @@ export function GameScreen({ onGameEnd }: GameScreenProps) {
   const [isMuted, setIsMuted] = useState(true);
 
   const [timeLeft, setTimeLeft] = useState(GAME_TIME_LIMIT);
+  const [bestTime, setBestTime] = useState<number | null>(() => {
+    const storedBestTime = localStorage.getItem(BEST_TIME_STORAGE_KEY);
+
+    if (!storedBestTime) return null;
+
+    const parsedBestTime = Number(storedBestTime);
+
+    return Number.isFinite(parsedBestTime) ? parsedBestTime : null;
+  });
 
   const tickingAudioRef = useRef<HTMLAudioElement | null>(null);
 
@@ -139,7 +149,16 @@ export function GameScreen({ onGameEnd }: GameScreenProps) {
           setMatchedCardIds(nextMatchedCardIds);
 
           if (nextMatchedCardIds.length / 2 === TOTAL_PAIRS) {
+            const elapsedTime = GAME_TIME_LIMIT - timeLeft;
+            const isNewBestTime = bestTime === null || elapsedTime < bestTime;
+
+            if (isNewBestTime) {
+              localStorage.setItem(BEST_TIME_STORAGE_KEY, String(elapsedTime));
+              setBestTime(elapsedTime);
+            }
+
             setGameStatus("won");
+
             window.setTimeout(() => {
               onGameEnd("won");
             }, 900);
@@ -181,20 +200,30 @@ export function GameScreen({ onGameEnd }: GameScreenProps) {
 
       <section className="relative z-10 mx-auto flex h-full w-full max-w-5xl flex-col">
         <header className="game-header-enter mb-3 shrink-0 border-b border-white/10 pb-3 sm:mb-8 sm:pb-6">
-          <div className="flex items-start justify-between gap-4">
+          <div className="flex items-start justify-between gap-3 sm:gap-4">
             <div className="min-w-0 flex-1">
               <p className="text-xs font-bold uppercase tracking-[0.28em] text-text-secondary sm:tracking-[0.35em]">
                 Memory Game
               </p>
 
-              <h1 className="mt-2 max-w-[13rem] text-2xl font-black leading-tight tracking-tight sm:max-w-none sm:text-4xl">
+              <h1 className="mt-2 max-w-[11rem] text-2xl font-black leading-tight tracking-tight sm:max-w-none sm:text-4xl">
                 Find the cosmic pairs
               </h1>
             </div>
-            <div className="rounded-full border border-white/10 bg-black/20 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.2em] text-text-secondary backdrop-blur-sm">
-              Moves: <span className="text-yellow-200">{moves}</span>
-            </div>
-            <div className="flex shrink-0 items-center gap-3">
+            <div className="flex shrink-0 items-start gap-2 sm:items-center sm:gap-3">
+              <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
+                <div className="rounded-full border border-white/10 bg-black/20 px-3 py-1.5 text-[0.62rem] font-bold uppercase tracking-[0.16em] text-text-secondary backdrop-blur-sm sm:px-4 sm:py-2 sm:text-xs">
+                  Best:{" "}
+                  <span className="text-yellow-200">
+                    {bestTime === null ? "--" : `${bestTime}s`}
+                  </span>
+                </div>
+
+                <div className="rounded-full border border-white/10 bg-black/20 px-3 py-1.5 text-[0.62rem] font-bold uppercase tracking-[0.16em] text-text-secondary backdrop-blur-sm sm:px-4 sm:py-2 sm:text-xs">
+                  Moves: <span className="text-yellow-200">{moves}</span>
+                </div>
+              </div>
+
               <SoundToggle
                 isMuted={isMuted}
                 onToggle={() => setIsMuted((currentIsMuted) => !currentIsMuted)}
@@ -231,7 +260,7 @@ export function GameScreen({ onGameEnd }: GameScreenProps) {
                 isTimeRunningOut ? "text-red-100/80" : "text-yellow-100/70"
               }`}
             >
-              seg
+              s
             </span>
           </div>
         </div>
