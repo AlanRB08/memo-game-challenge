@@ -12,6 +12,13 @@ import { MatchResultModal } from "./MatchResultModal";
 const GAME_TIME_LIMIT = 30;
 const TOTAL_PAIRS = 4;
 
+function getTickingPlaybackRate(timeLeft: number) {
+  if (timeLeft <= 3) return 2.4;
+  if (timeLeft <= 5) return 2;
+  if (timeLeft <= 7) return 1.6;
+  return 1.25;
+}
+
 type GameStatus = "playing" | "won" | "lost";
 type MatchResult = "match" | "no-match" | null;
 type GameScreenProps = {
@@ -29,10 +36,11 @@ export function GameScreen({ onGameEnd }: GameScreenProps) {
   const [isMuted, setIsMuted] = useState(true);
 
   const [timeLeft, setTimeLeft] = useState(GAME_TIME_LIMIT);
+
   const tickingAudioRef = useRef<HTMLAudioElement | null>(null);
 
   const [gameStatus, setGameStatus] = useState<GameStatus>("playing");
-
+  const isTimeRunningOut = timeLeft <= 10;
   const isBoardDisabled =
     gameStatus !== "playing" || isCheckingMatch || matchResult !== null;
 
@@ -62,7 +70,6 @@ export function GameScreen({ onGameEnd }: GameScreenProps) {
     tickingAudioRef.current = new Audio("/sound/ticking.mp3");
     tickingAudioRef.current.loop = true;
     tickingAudioRef.current.volume = 0.5;
-    tickingAudioRef.current.playbackRate = 3;
 
     return () => {
       tickingAudioRef.current?.pause();
@@ -82,6 +89,8 @@ export function GameScreen({ onGameEnd }: GameScreenProps) {
       audio.currentTime = 0;
       return;
     }
+
+    audio.playbackRate = getTickingPlaybackRate(timeLeft);
 
     audio.play().catch(() => {
       // Browser autoplay protection.
@@ -175,17 +184,6 @@ export function GameScreen({ onGameEnd }: GameScreenProps) {
             </div>
 
             <div className="flex shrink-0 items-center gap-3">
-              <div
-                aria-label={`Time left: ${timeLeft} seconds`}
-                className={`rounded-full border px-4 py-2 text-sm font-black tabular-nums shadow-lg backdrop-blur-md sm:text-base ${
-                  timeLeft <= 10
-                    ? "border-red-300/50 bg-red-500/20 text-red-100"
-                    : "border-white/15 bg-white/10 text-white"
-                }`}
-              >
-                {timeLeft}s
-              </div>
-
               <SoundToggle
                 isMuted={isMuted}
                 onToggle={() => setIsMuted((currentIsMuted) => !currentIsMuted)}
@@ -193,7 +191,39 @@ export function GameScreen({ onGameEnd }: GameScreenProps) {
             </div>
           </div>
         </header>
+        <div className="mx-auto mb-4 flex flex-col items-center sm:mb-5">
+          <span
+            className={`mb-2 text-[0.65rem] font-semibold uppercase tracking-[0.28em] ${
+              isTimeRunningOut ? "text-red-100/80" : "text-yellow-100/70"
+            }`}
+          >
+            Time
+          </span>
 
+          <div
+            className={`mx-auto flex w-fit items-end justify-center gap-2 rounded-full border px-4 py-2.5 backdrop-blur-sm transition-all duration-300 sm:gap-3 sm:px-5 sm:py-3 ${
+              isTimeRunningOut
+                ? "timer-warning border-red-300/50 bg-red-950/30 shadow-[0_0_35px_rgba(248,113,113,0.25)]"
+                : "border-yellow-200/30 bg-black/25 shadow-[0_0_30px_rgba(250,204,21,0.12)]"
+            }`}
+          >
+            <span
+              className={`font-mono text-3xl font-bold leading-none tabular-nums sm:text-5xl ${
+                isTimeRunningOut ? "text-red-200" : "text-yellow-200"
+              }`}
+            >
+              {timeLeft}
+            </span>
+
+            <span
+              className={`pb-0.5 text-[0.65rem] font-semibold uppercase tracking-[0.2em] sm:pb-1 sm:text-sm ${
+                isTimeRunningOut ? "text-red-100/80" : "text-yellow-100/70"
+              }`}
+            >
+              seg
+            </span>
+          </div>
+        </div>
         <section className="flex min-h-0 flex-1 flex-col">
           <MatchResultModal result={matchResult} />
 
