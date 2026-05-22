@@ -36,6 +36,7 @@ export function GameScreen({ onGameEnd }: GameScreenProps) {
 
   const [flippedCardIds, setFlippedCardIds] = useState<string[]>([]);
   const [matchedCardIds, setMatchedCardIds] = useState<string[]>([]);
+  const [moves, setMoves] = useState(0);
   const [isCheckingMatch, setIsCheckingMatch] = useState(false);
 
   const [matchResult, setMatchResult] = useState<MatchResult>(null);
@@ -114,6 +115,7 @@ export function GameScreen({ onGameEnd }: GameScreenProps) {
     }
     playSoundEffect(flipSound, SOUND_VOLUME.flip);
     if (flippedCardIds.length === 1) {
+      setMoves((currentMoves) => currentMoves + 1);
       const firstCardId = flippedCardIds[0];
       const firstCard = cards.find((card) => card.id === firstCardId);
       const secondCard = cards.find((card) => card.id === cardId);
@@ -189,7 +191,9 @@ export function GameScreen({ onGameEnd }: GameScreenProps) {
                 Find the cosmic pairs
               </h1>
             </div>
-
+            <div className="rounded-full border border-white/10 bg-black/20 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.2em] text-text-secondary backdrop-blur-sm">
+              Moves: <span className="text-yellow-200">{moves}</span>
+            </div>
             <div className="flex shrink-0 items-center gap-3">
               <SoundToggle
                 isMuted={isMuted}
