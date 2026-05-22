@@ -162,7 +162,7 @@ export function GameScreen({ onGameEnd }: GameScreenProps) {
       <div className="cosmic-glow absolute inset-0" />
 
       <section className="relative z-10 mx-auto flex h-full w-full max-w-5xl flex-col">
-        <header className="mb-5 shrink-0 border-b border-white/10 pb-5 sm:mb-8 sm:pb-6">
+        <header className="game-header-enter mb-5 shrink-0 border-b border-white/10 pb-5 sm:mb-8 sm:pb-6">
           <div className="flex items-start justify-between gap-4">
             <div className="min-w-0 flex-1">
               <p className="text-xs font-bold uppercase tracking-[0.28em] text-text-secondary sm:tracking-[0.35em]">
@@ -197,7 +197,7 @@ export function GameScreen({ onGameEnd }: GameScreenProps) {
         <section className="flex min-h-0 flex-1 flex-col">
           <MatchResultModal result={matchResult} />
 
-          <div className="flex min-h-0 flex-1 items-center justify-center">
+          <div className="game-board-enter flex min-h-0 flex-1 items-center justify-center">
             <div
               aria-label="Memory cards board"
               className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-5"
