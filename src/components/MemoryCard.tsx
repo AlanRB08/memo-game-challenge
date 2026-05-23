@@ -28,7 +28,7 @@ export function MemoryCard({
         isFlipped ? `${label} card` : `Hidden memory card ${index + 1}`
       }
       aria-pressed={isFlipped}
-      className={`group relative selec-none aspect-square w-[clamp(4.5rem,22vw,8rem)] rounded-2xl [perspective:1000px] focus:outline-none focus:ring-2 focus:ring-yellow-300 focus:ring-offset-2 focus:ring-offset-background disabled:cursor-default sm:w-[clamp(6rem,14vw,10rem)] ${
+      className={`group relative select-none aspect-square w-[clamp(4.5rem,22vw,8rem)] rounded-2xl [perspective:1000px] focus:outline-none focus:ring-2 focus:ring-yellow-300 focus:ring-offset-2 focus:ring-offset-background disabled:cursor-default sm:w-[clamp(6rem,14vw,10rem)] ${
         canInteract ? "cursor-pointer" : "cursor-default"
       }`}
     >

@@ -1,7 +1,7 @@
 import { useState, useCallback } from "react";
 import { StartScreen } from "./components/StartScreen";
 import { GameScreen } from "./components/GameScreen";
-import { ResolveScreen } from "./components/ResultScreen";
+import { ResultScreen } from "./components/ResultScreen";
 
 type Screen = "start" | "game" | "result";
 type GameResult = "won" | "lost";
@@ -33,7 +33,7 @@ function App() {
       {screen === "game" && <GameScreen onGameEnd={handleGameEnd} />}
 
       {screen === "result" && gameResult && (
-        <ResolveScreen
+        <ResultScreen
           result={gameResult}
           isNewBestTime={isNewBestTime}
           onPlayAgain={handlePlayAgain}

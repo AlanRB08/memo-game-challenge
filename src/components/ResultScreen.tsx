@@ -6,7 +6,7 @@ type ResolveScreenProps = {
   isNewBestTime?: boolean;
 };
 
-export function ResolveScreen({
+export function ResultScreen({
   result,
   onPlayAgain,
   isNewBestTime = false,
