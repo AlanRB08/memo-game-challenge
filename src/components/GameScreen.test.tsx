@@ -1,6 +1,6 @@
-import { render, screen } from "@testing-library/react";
+import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { GameScreen } from "./GameScreen";
 
@@ -34,6 +34,9 @@ beforeEach(() => {
   vi.spyOn(window.HTMLMediaElement.prototype, "pause").mockImplementation(
     () => {}
   );
+});
+afterEach(() => {
+  vi.useRealTimers();
 });
 
 describe("GameScreen", () => {
@@ -82,5 +85,23 @@ describe("GameScreen", () => {
     render(<GameScreen onGameEnd={() => {}} />);
 
     expect(screen.getByText(/best:/i)).toHaveTextContent("Best: 12s");
+  });
+  it("ends the game as lost when the timer reaches zero", () => {
+    vi.useFakeTimers();
+
+    const onGameEnd = vi.fn();
+
+    render(<GameScreen onGameEnd={onGameEnd} />);
+
+    act(() => {
+      vi.advanceTimersByTime(30_000);
+    });
+
+    act(() => {
+      vi.advanceTimersByTime(600);
+    });
+
+    expect(onGameEnd).toHaveBeenCalledTimes(1);
+    expect(onGameEnd).toHaveBeenCalledWith("lost", false);
   });
 });

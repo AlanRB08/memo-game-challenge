@@ -4,7 +4,7 @@ import { describe, expect, it, vi } from "vitest";
 
 import { ResultScreen } from "./ResultScreen";
 
-describe("ResolveScreen", () => {
+describe("ResultScreen", () => {
   it("renders the win message", () => {
     render(<ResultScreen result="won" onPlayAgain={() => {}} />);
 
