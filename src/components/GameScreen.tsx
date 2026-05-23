@@ -14,6 +14,9 @@ import { MatchResultModal } from "./MatchResultModal";
 
 const GAME_TIME_LIMIT = 30;
 const TOTAL_PAIRS = 4;
+const RESULT_SCREEN_DELAY_MS = 600;
+const MATCH_CHECK_DELAY_MS = 600;
+const MATCH_FEEDBACK_DELAY_MS = 600;
 const SOUND_VOLUME = {
   flip: 0.75,
   correct: 0.65,
@@ -73,7 +76,7 @@ export function GameScreen({ onGameEnd }: GameScreenProps) {
       setGameStatus(result);
       window.setTimeout(() => {
         onGameEnd(result, isNewBestTime);
-      }, 900);
+      }, RESULT_SCREEN_DELAY_MS);
     },
     [onGameEnd]
   );
@@ -83,8 +86,7 @@ export function GameScreen({ onGameEnd }: GameScreenProps) {
     const timerId = window.setInterval(() => {
       setTimeLeft((currentTimeLeft) => {
         if (currentTimeLeft <= 1) {
-          setGameStatus("lost");
-
+          endGame("lost");
           return 0;
         }
 
@@ -96,6 +98,7 @@ export function GameScreen({ onGameEnd }: GameScreenProps) {
       window.clearInterval(timerId);
     };
   }, [gameStatus, endGame]);
+
   useEffect(() => {
     tickingAudioRef.current = new Audio("/sound/ticking.mp3");
     tickingAudioRef.current.loop = true;
@@ -106,6 +109,7 @@ export function GameScreen({ onGameEnd }: GameScreenProps) {
       tickingAudioRef.current = null;
     };
   }, []);
+
   useEffect(() => {
     const audio = tickingAudioRef.current;
 
@@ -126,12 +130,14 @@ export function GameScreen({ onGameEnd }: GameScreenProps) {
       // Browser autoplay protection.
     });
   }, [timeLeft, gameStatus, isMuted]);
+
   useEffect(() => {
     const pendingTimeouts = matchTimeoutsRef.current;
     return () => {
       pendingTimeouts.forEach((id) => window.clearTimeout(id));
     };
   }, []);
+
   function handleCardClick(cardId: string) {
     if (gameStatus !== "playing") return;
     const isAlreadyFlipped = flippedCardIds.includes(cardId);
@@ -178,11 +184,8 @@ export function GameScreen({ onGameEnd }: GameScreenProps) {
               spread: 80,
               origin: { y: 0.65 },
             });
-            setGameStatus("won");
 
-            window.setTimeout(() => {
-              onGameEnd("won", isNewBestTime);
-            }, 900);
+            endGame("won", isNewBestTime);
           }
         } else {
           setMatchResult("no-match");
@@ -194,9 +197,9 @@ export function GameScreen({ onGameEnd }: GameScreenProps) {
         const resetTimeoutId = window.setTimeout(() => {
           setMatchResult(null);
           setIsCheckingMatch(false);
-        }, 900);
+        }, MATCH_FEEDBACK_DELAY_MS);
         matchTimeoutsRef.current.push(resetTimeoutId);
-      }, 900);
+      }, MATCH_CHECK_DELAY_MS);
       matchTimeoutsRef.current.push(checkTimeoutId);
       return;
     }
