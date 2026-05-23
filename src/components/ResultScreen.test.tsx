@@ -2,11 +2,11 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 
-import { ResolveScreen } from "./ResultScreen";
+import { ResultScreen } from "./ResultScreen";
 
 describe("ResolveScreen", () => {
   it("renders the win message", () => {
-    render(<ResolveScreen result="won" onPlayAgain={() => {}} />);
+    render(<ResultScreen result="won" onPlayAgain={() => {}} />);
 
     expect(
       screen.getByRole("heading", { name: /you did it/i })
@@ -18,7 +18,7 @@ describe("ResolveScreen", () => {
   });
 
   it("renders the lose message", () => {
-    render(<ResolveScreen result="lost" onPlayAgain={() => {}} />);
+    render(<ResultScreen result="lost" onPlayAgain={() => {}} />);
 
     expect(
       screen.getByRole("heading", { name: /oops, you were close/i })
@@ -29,7 +29,7 @@ describe("ResolveScreen", () => {
     const user = userEvent.setup();
     const onPlayAgain = vi.fn();
 
-    render(<ResolveScreen result="won" onPlayAgain={onPlayAgain} />);
+    render(<ResultScreen result="won" onPlayAgain={onPlayAgain} />);
 
     await user.click(screen.getByRole("button", { name: /play again/i }));
 
