@@ -1,6 +1,6 @@
 import restartIcon from "../assets/restart.svg";
 
-type ResolveScreenProps = {
+type ResultScreenProps = {
   result: "won" | "lost";
   onPlayAgain: () => void;
   isNewBestTime?: boolean;
@@ -10,7 +10,7 @@ export function ResultScreen({
   result,
   onPlayAgain,
   isNewBestTime = false,
-}: ResolveScreenProps) {
+}: ResultScreenProps) {
   const title =
     result === "won"
       ? isNewBestTime
