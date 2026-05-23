@@ -51,7 +51,9 @@ export function GameScreen({ onGameEnd }: GameScreenProps) {
 
   const [matchResult, setMatchResult] = useState<MatchResult>(null);
 
-  const [isMuted, setIsMuted] = useState(true);
+  const [isMuted, setIsMuted] = useState(() => {
+    return localStorage.getItem("sound-muted") !== "false";
+  });
 
   const [timeLeft, setTimeLeft] = useState(GAME_TIME_LIMIT);
   const [bestTime, setBestTime] = useState<number | null>(() => {
@@ -268,7 +270,13 @@ export function GameScreen({ onGameEnd }: GameScreenProps) {
 
               <SoundToggle
                 isMuted={isMuted}
-                onToggle={() => setIsMuted((currentIsMuted) => !currentIsMuted)}
+                onToggle={() =>
+                  setIsMuted((currentIsMuted) => {
+                    const next = !currentIsMuted;
+                    localStorage.setItem("sound-muted", String(next));
+                    return next;
+                  })
+                }
               />
             </div>
           </div>
