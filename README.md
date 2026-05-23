@@ -1,5 +1,7 @@
 # Memory Game Challenge
 
+**Live demo:** https://memo-game-challenge.vercel.app
+
 A memory card game built with React and TypeScript as part of a frontend technical challenge. Flip the cards, find every cosmic pair, and beat the 30-second timer.
 
 ## Getting Started
