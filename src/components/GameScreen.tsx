@@ -5,6 +5,8 @@ import confetti from "canvas-confetti";
 import correctSound from "../assets/correct.mp3";
 import incorrectSound from "../assets/incorrect.mp3";
 import flipSound from "../assets/cardFlip.mp3";
+import winSound from "../assets/confettiSound.mp3";
+import loseSound from "../assets/loseSound.mp3";
 
 import { createShuffledCards } from "../data/cards";
 import { MemoryCard } from "./MemoryCard";
@@ -22,6 +24,8 @@ const SOUND_VOLUME = {
   correct: 0.65,
   incorrect: 0.65,
   ticking: 0.45,
+  win: 0.7,
+  lose: 0.7,
 };
 const BEST_TIME_STORAGE_KEY = "memory-game-best-time";
 
@@ -74,11 +78,24 @@ export function GameScreen({ onGameEnd }: GameScreenProps) {
       hasGameEndedRef.current = true;
 
       setGameStatus(result);
+
+      if (!isMuted) {
+        const endSound = result === "won" ? winSound : loseSound;
+        const volume = result === "won" ? SOUND_VOLUME.win : SOUND_VOLUME.lose;
+
+        const audio = new Audio(endSound);
+        audio.volume = volume;
+
+        audio.play().catch((error) => {
+          console.error("End game sound playback failed:", error);
+        });
+      }
+
       window.setTimeout(() => {
         onGameEnd(result, isNewBestTime);
       }, RESULT_SCREEN_DELAY_MS);
     },
-    [onGameEnd]
+    [isMuted, onGameEnd]
   );
   useEffect(() => {
     if (gameStatus !== "playing") return;
